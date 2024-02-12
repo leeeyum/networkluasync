@@ -54,18 +54,18 @@ updateStatusCode("Connected to " .. adr)
 
 local funcs = {
     readfile = function(loc : string)
-        local s, r = pcall(function()
-            return readfile(loc)
-        end)
-        if s then
-            return r
+        local req = request({
+            Url = "http://" .. adr .. "/workspace/" .. loc,
+            Method = "GET"
+        })
+        if req.Success then
+            return req.Body
         else
-            local req = request({
-                Url = "http://" .. adr .. "/sandbox/" .. loc,
-                Method = "GET"
-            })
-            if req.Success then
-                return req.Body
+            local s, r = pcall(function()
+                return gudReadfile(loc)
+            end)
+            if s then
+                return r
             end
         end
     end
